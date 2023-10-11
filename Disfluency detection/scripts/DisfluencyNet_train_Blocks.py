@@ -47,7 +47,7 @@ writer = SummaryWriter("wav2vec_base_model_quart_data_blocks")
 writer = SummaryWriter(comment="Quart dataset for binary classification blocks;")
 ##################################################################################################
 # wav2vec2.0
-bundle = torchaudio.pipelines.WAV2VEC2_BASE
+bundle = torchaudio.pipelines.WAV2VEC2_XLSR53
 print("Sample Rate of model:", bundle.sample_rate)
 
 model_wav2vec = bundle.get_model().to(device)
