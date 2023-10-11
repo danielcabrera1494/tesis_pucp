@@ -37,7 +37,7 @@ from helper_functions import test
 train_path_stutter = 'train_data/blocks'
 train_path_fluent  = 'train_data/fluent'
 test_path_stutter  = 'test_data/blocks'
-test_path_fluent   = 'test_data/fluen'
+test_path_fluent   = 'test_data/fluent'
 
 set_seed(123)
 device  = __get_device__()
