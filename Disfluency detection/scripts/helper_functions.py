@@ -25,6 +25,8 @@ from torch.utils.tensorboard import SummaryWriter
 import random
 from tqdm import tqdm
 
+from TTS.api import TTS
+
 ##################################################################################################
 # First things first! Set a seed for reproducibility.
 # https://www.cs.mcgill.ca/~ksinha4/practices_for_reproducibility/
@@ -220,3 +222,12 @@ def test(epoch):
   eval_accu.append(accu)
 
   print('Validation Loss: %.3f | Accuracy: %.3f'%(test_loss,accu))  
+  
+def generate_speech(file_path, language, gpu=True):
+    tts = TTS("tts_models/multilingual/multi-dataset/xtts_v1", gpu=gpu)
+    
+    # generate speech by cloning a voice using default settings
+    tts.tts_to_file(text="It took me quite a long time to develop a voice, and now that I have it I'm not going to be silent.",
+                    file_path=file_path,
+                    speaker_wav="/path/to/target/speaker.wav",
+                    language=language)
