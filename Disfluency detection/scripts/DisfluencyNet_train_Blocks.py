@@ -47,13 +47,15 @@ writer = SummaryWriter("wav2vec_base_model_quart_data_blocks")
 writer = SummaryWriter(comment="Quart dataset for binary classification blocks;")
 ##################################################################################################
 # wav2vec2.0
-bundle = torchaudio.pipelines.WAV2VEC2_XLSR53
+bundle = torchaudio.pipelines.WAV2VEC2_BASE
 print("Sample Rate of model:", bundle.sample_rate)
+print("Audio backends:", torchaudio.list_audio_backends())
 
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
 def conv_audio_data (filename) :
-    waveform, sample_rate = torchaudio.load(filename)
+    audio_format = 'wav'
+    waveform, sample_rate = torchaudio.load(filename, format = audio_format)
     waveform = waveform.to(device)
     if sample_rate != bundle.sample_rate:
         print('Mismatched sample rate')
@@ -293,7 +295,7 @@ def train(epoch):
 eval_losses=[]
 eval_accu=[]
 
-torch.save(model, '/home/payal/SpeechDisfluency_ContextualRepresentation/testing_scripts/DisfluencyNet_snd_quart.pth')
+torch.save(model, 'D:/Users/Daniel/Documents/GitHub/tesis_pucp/Disfluency detection/scripts/saves/DisfluencyNet_snd_quart.pth')
 def test(epoch):
   model.eval()
 
