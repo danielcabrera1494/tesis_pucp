@@ -26,4 +26,4 @@ def generate_speech(file_path, language, gpu=True):
 relative_path = '../scripts/audio/audio_to_clone.wav'
 absolute_path = os.path.abspath(relative_path)
 
-generate_speech(file_path="output.wav", language="en", gpu=True)
+generate_speech(file_path=absolute_path, language="en", gpu=True)
