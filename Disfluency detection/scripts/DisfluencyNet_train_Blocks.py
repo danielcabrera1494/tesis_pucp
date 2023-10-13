@@ -33,9 +33,6 @@ from helper_functions import __test_balanced_data__
 from helper_functions import train
 from helper_functions import test
 
-from helper_functions import generate_speech
-
-
 # get all data
 train_path_stutter = 'train_data/blocks'
 train_path_fluent  = 'train_data/fluent'
