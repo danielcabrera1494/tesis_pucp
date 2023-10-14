@@ -10,7 +10,8 @@ def generate_speech(file_path, language, gpu=True):
     tts = TTS("tts_models/multilingual/multi-dataset/xtts_v1", gpu=gpu)
     
     # Ask the user for the input text
-    input_text = input("Introduce el texto que quieres convertir a voz: ")
+    #input_text = input("Introduce el texto que quieres convertir a voz: ")
+    text = "Este texto es para generar audio pasando un audio de entrada."
 
     # Create the "speech_generated" directory if it doesn't exist
     output_directory = "speech_generated"
@@ -21,9 +22,9 @@ def generate_speech(file_path, language, gpu=True):
     output_path = os.path.join(output_directory, "output.wav")
     
     # generate speech by cloning a voice using default settings
-    tts.tts_to_file(text=input_text,
+    tts.tts_to_file(text=text,
                     file_path=output_path,
-                    speaker_wav=absolute_path,
+                    speaker_wav=file_path,
                     language=language,
     )
     
