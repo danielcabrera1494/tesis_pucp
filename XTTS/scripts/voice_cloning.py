@@ -28,14 +28,16 @@ def generate_speech(file_path, language, text, gpu=True):
                     language=language,
     )
 
+relative_path = '../scripts/audio/audio_to_clone.wav'
+absolute_path = os.path.abspath(relative_path)
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description="Generate speech from input text")
   parser.add_argument("--text", type=str, default="Este texto es para generar audio pasando un audio de entrada",
                       help="Text to convert to speech")
+  parser.add_argument("--audio_file", type=str, default=absolute_path,
+                      help="Audio file used for cloning")
 
   args = parser.parse_args()
 
-relative_path = '../scripts/audio/audio_to_clone.wav'
-absolute_path = os.path.abspath(relative_path)
-
-generate_speech(file_path=absolute_path, language="es", text=args.text, gpu=False)
+generate_speech(file_path=args.audio_file, language="es", text=args.text, gpu=False)
