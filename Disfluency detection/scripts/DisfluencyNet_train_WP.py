@@ -281,6 +281,9 @@ def train(epoch):
 eval_losses=[]
 eval_accu=[]
 
+relative_path = '../scripts/saves/DisfluencyNet_snd_quart.pth'
+absolute_path = os.path.abspath(relative_path)
+torch.save(model, absolute_path)
 
 def test(epoch):
   model.eval()
