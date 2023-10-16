@@ -72,7 +72,7 @@ discarded_s = 0
 for filename in glob.glob(os.path.join(train_path_stutter, '*.wav')):
     stutter_np = conv_audio_data(filename)
     # fluent_np --> (1, 149, 768)
-    if ((np.shape(stutter_np)[0] != 1) |(np.shape(stutter_np)[1] != 149) | (np.shape(stutter_np)[2] != 768)) :
+    if ((np.shape(stutter_np)[0] != 1) |(np.shape(stutter_np)[1] != 149) | (np.shape(stutter_np)[2] != 1024)) :
         discarded_s += 1
     else:
         x_s.append(stutter_np)
@@ -82,7 +82,7 @@ discarded = 0
 for filename in glob.glob(os.path.join(train_path_fluent, '*.wav')):
     fluent_np = conv_audio_data(filename)
     # fluent_np --> (1, 149, 768)
-    if ((np.shape(fluent_np)[0] != 1) |(np.shape(fluent_np)[1] != 149) | (np.shape(fluent_np)[2] != 768)) :
+    if ((np.shape(fluent_np)[0] != 1) |(np.shape(fluent_np)[1] != 149) | (np.shape(fluent_np)[2] != 1024)) :
         discarded += 1
     else:
         x_f.append(fluent_np)
@@ -101,7 +101,7 @@ discarded_t_s = 0
 for filename in glob.glob(os.path.join(test_path_stutter, '*.wav')):
     stutter_np = conv_audio_data(filename)
     # stutter_np --> (1, 149, 768)
-    if ((np.shape(stutter_np)[0] != 1) |(np.shape(stutter_np)[1] != 149) | (np.shape(stutter_np)[2] != 768)) :
+    if ((np.shape(stutter_np)[0] != 1) |(np.shape(stutter_np)[1] != 149) | (np.shape(stutter_np)[2] != 1024)) :
         discarded_t_s += 1
     else:
         x_t_s.append(stutter_np)
@@ -111,7 +111,7 @@ discarded_t = 0
 for filename in glob.glob(os.path.join(test_path_fluent, '*.wav')):
     fluent_np = conv_audio_data(filename)
     # fluent_np --> (1, 149, 768)
-    if ((np.shape(fluent_np)[0] != 1) |(np.shape(fluent_np)[1] != 149) | (np.shape(fluent_np)[2] != 768)) :
+    if ((np.shape(fluent_np)[0] != 1) |(np.shape(fluent_np)[1] != 149) | (np.shape(fluent_np)[2] != 1024)) :
         discarded_t += 1
     else:
         x_t_f.append(fluent_np)
@@ -194,7 +194,7 @@ class StutterNet(nn.Module):
         self.layer2_bn = nn.BatchNorm2d(16)
         # input size = (batch_size, 16, 37, 192)
         self.flatten = torch.nn.Flatten()
-        self.fc1 = nn.Linear(16* 37* 192,4000, bias=True)
+        self.fc1 = nn.Linear(16* 37* 256,4000, bias=True)
         self.fc1_bn = nn.BatchNorm1d(4000)
         self.fc2 = nn.Linear(4000,500, bias=True)
         self.fc2_bn = nn.BatchNorm1d(500)
