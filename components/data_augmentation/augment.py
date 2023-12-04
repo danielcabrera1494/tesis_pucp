@@ -1,6 +1,6 @@
 import os
 from .cloning.voice_cloning import VoiceCloner
-from .noising.noise_augment import NoiseAugmenter
+from .noising.noise_audio_augment import NoiseAugmenter
 
 
 class AugmentationTool:

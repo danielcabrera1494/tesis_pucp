@@ -1,3 +1,6 @@
 argparse
 nltk
 TTS
+syltippy
+pydub
+sacremoses

@@ -1,12 +1,5 @@
-from nltk.tokenize import sent_tokenize
-
+from utils import read_tokenize_file
 from components.data_augmentation.augment import AugmentationTool
-
-def read_tokenize_file(path):
-    with open(path, "r") as f:
-        text = f.read().replace("\n", " ")
-        return sent_tokenize(text)
-
 
 sentences = read_tokenize_file("sample.txt")
 
