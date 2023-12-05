@@ -34,10 +34,10 @@ from helper_functions import train
 from helper_functions import test
 
 # get all data
-train_path_stutter = 'train_data/wp'
-train_path_fluent  = 'train_data/fluent'
-test_path_stutter  = 'test_data/wp'
-test_path_fluent   = 'test_data/fluent'
+train_path_stutter = '/content/drive/MyDrive/Ulima/Data/train_data/WordRep'
+train_path_fluent  = '/content/drive/MyDrive/Ulima/Data/train_data/NoStutteredWords'
+test_path_stutter  = '/content/drive/MyDrive/Ulima/Data/test_data/WordRep'
+test_path_fluent   = '/content/drive/MyDrive/Ulima/Data/test_data/NoStutteredWords'
 
 set_seed(123)
 device  = __get_device__()

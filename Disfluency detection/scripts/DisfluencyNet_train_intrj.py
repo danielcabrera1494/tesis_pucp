@@ -34,10 +34,10 @@ from helper_functions import train
 from helper_functions import test
 
 # get all data
-train_path_stutter = 'train_data/blocks'
-train_path_fluent  = 'train_data/fluent'
-test_path_stutter  = 'test_data/blocks'
-test_path_fluent   = 'test_data/fluent'
+train_path_stutter = '/content/drive/MyDrive/Ulima/Data/train_data/Interjection'
+train_path_fluent  = '/content/drive/MyDrive/Ulima/Data/train_data/NoStutteredWords'
+test_path_stutter  = '/content/drive/MyDrive/Ulima/Data/test_data/Interjection'
+test_path_fluent   = '/content/drive/MyDrive/Ulima/Data/test_data/NoStutteredWords'
 
 set_seed(123)
 device  = __get_device__()
