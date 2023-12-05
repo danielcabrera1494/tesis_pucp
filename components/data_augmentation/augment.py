@@ -1,4 +1,5 @@
 import os
+import random
 from .cloning.voice_cloning import VoiceCloner
 from .noising.noise_audio_augment import NoiseAugmenter
 
@@ -25,9 +26,16 @@ class AugmentationTool:
                                            os.path.join(self._output_dir, output_name),
                                            language=self._lang)
 
-        # introduce dysfluencies
-        self._noise_augmenter.transform_1(os.path.join(self._output_dir, output_name),
-                                          os.path.join(self._output_dir, "sample_aug1.wav"))
-        
-        self._noise_augmenter.transform_2(os.path.join(self._output_dir, output_name),
-                                          os.path.join(self._output_dir, "sample_aug2.wav"))
+        # Randomly choose a noise transformation
+        if random.random() >= 0.5:
+            # Use transform_1
+            self._noise_augmenter.transform_1(
+                os.path.join(self._output_dir, output_name),
+                os.path.join(self._output_dir, "aug1_" + output_name)
+            )
+        else:
+            # Use transform_2
+            self._noise_augmenter.transform_2(
+                os.path.join(self._output_dir, output_name),
+                os.path.join(self._output_dir, "aug2_" + output_name)
+            )
