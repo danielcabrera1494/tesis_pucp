@@ -194,7 +194,7 @@ class StutterNet(nn.Module):
         self.layer2_bn = nn.BatchNorm2d(16)
         # input size = (batch_size, 16, 37, 192)
         self.flatten = torch.nn.Flatten()
-        self.fc1 = nn.Linear(16* 37* 192,4000, bias=True)
+        self.fc1 = nn.Linear(16* 37* 256,4000, bias=True)
         self.fc1_bn = nn.BatchNorm1d(4000)
         self.fc2 = nn.Linear(4000,500, bias=True)
         self.fc2_bn = nn.BatchNorm1d(500)
