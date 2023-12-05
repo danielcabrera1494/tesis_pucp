@@ -49,7 +49,6 @@ writer = SummaryWriter(comment="Quart dataset for binary classification blocks;"
 # wav2vec2.0
 bundle = torchaudio.pipelines.WAV2VEC2_XLSR53
 print("Sample Rate of model:", bundle.sample_rate)
-print("Audio backends:", torchaudio.list_audio_backends())
 
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
@@ -298,6 +297,7 @@ eval_accu=[]
 relative_path = '../scripts/saves/DisfluencyNet_snd_quart.pth'
 absolute_path = os.path.abspath(relative_path)
 torch.save(model, absolute_path)
+
 def test(epoch):
   model.eval()
 

@@ -53,7 +53,8 @@ print("Sample Rate of model:", bundle.sample_rate)
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
 def conv_audio_data (filename) :
-    waveform, sample_rate = torchaudio.load(filename)
+    audio_format = 'wav'
+    waveform, sample_rate = torchaudio.load(filename, format = audio_format)
     waveform = waveform.to(device)
     if sample_rate != bundle.sample_rate:
         print('Mismatched sample rate')
@@ -127,8 +128,8 @@ y_test = y_t_s + y_t_f
 ##################################################################################################
 ## Hyper parameters
 batch_size = 512
-num_epochs = 200
-learning_rate = 0.001
+num_epochs = 150
+learning_rate = 0.0001
 
 ## DATA LOADER ##
 # split data and translate to dataloader
@@ -194,11 +195,11 @@ class StutterNet(nn.Module):
         self.layer2_bn = nn.BatchNorm2d(16)
         # input size = (batch_size, 16, 37, 192)
         self.flatten = torch.nn.Flatten()
-        self.fc1 = nn.Linear(16* 37* 256,4000, bias=True)
-        self.fc1_bn = nn.BatchNorm1d(4000)
-        self.fc2 = nn.Linear(4000,500, bias=True)
-        self.fc2_bn = nn.BatchNorm1d(500)
-        self.fc3 = nn.Linear(500,100, bias=True)
+        self.fc1 = nn.Linear(16* 37* 256,500, bias=True)
+        self.fc1_bn = nn.BatchNorm1d(500)
+        self.fc2 = nn.Linear(500,250, bias=True)
+        self.fc2_bn = nn.BatchNorm1d(250)
+        self.fc3 = nn.Linear(250,100, bias=True)
         self.fc3_bn = nn.BatchNorm1d(100)
         self.fc4 = nn.Linear(100,10, bias=True)
         self.fc4_bn = nn.BatchNorm1d(10)

@@ -53,7 +53,8 @@ print("Sample Rate of model:", bundle.sample_rate)
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
 def conv_audio_data (filename) :
-    waveform, sample_rate = torchaudio.load(filename)
+    audio_format = 'wav'
+    waveform, sample_rate = torchaudio.load(filename, format = audio_format)
     waveform = waveform.to(device)
     if sample_rate != bundle.sample_rate:
         print('Mismatched sample rate')
@@ -128,7 +129,7 @@ y_test = y_t_s + y_t_f
 ## Hyper parameters
 batch_size = 512
 num_epochs = 150
-learning_rate = 0.001
+learning_rate = 0.0001
 
 ## DATA LOADER ##
 # split data and translate to dataloader

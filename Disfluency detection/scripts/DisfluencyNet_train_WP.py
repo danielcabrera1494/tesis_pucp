@@ -53,7 +53,8 @@ print("Sample Rate of model:", bundle.sample_rate)
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
 def conv_audio_data (filename) :
-    waveform, sample_rate = torchaudio.load(filename)
+    audio_format = 'wav'
+    waveform, sample_rate = torchaudio.load(filename, format = audio_format)
     waveform = waveform.to(device)
     if sample_rate != bundle.sample_rate:
         print('Mismatched sample rate')
@@ -127,7 +128,7 @@ y_test = y_t_s + y_t_f
 ##################################################################################################
 ## Hyper parameters
 batch_size = 512
-num_epochs = 300
+num_epochs = 150
 learning_rate = 0.0001
 
 ## DATA LOADER ##
@@ -208,25 +209,37 @@ class StutterNet(nn.Module):
         self.sm = nn.Softmax()
     
     def forward(self, x):
+        #print('Before Layer1',np.shape(x))
         out = self.layer1(x)
+        # out = self.layer1_bn(out)
+        # print('After layer 1',np.shape(out))
         out = self.layer2(out)
+        # out = self.layer2_bn(out)
+        # print('After layer 2',np.shape(out))
         out  = self.flatten(out)
 
         out = self.fc1(out)
         out = self.relu(out)
+        # out = self.fc1_bn(out)
 
         out = self.fc2(out)
         out = self.relu(out)
+        # out = self.fc2_bn(out)
 
         out = self.fc3(out)
         out = self.relu(out)
+        # out = self.fc3_bn(out)
 
         out = self.fc4(out)
         out = self.relu(out)
+        # out = self.fc4_bn(out)
 
         out = self.fc5(out)
         out = self.sm(out)
-        
+        #print('After final ',np.shape(out))
+
+        # log_probs = torch.nn.functional.log_softmax(out, dim=1)
+
         return out
 
 model = StutterNet(batch_size).to(device)
@@ -378,5 +391,3 @@ f1_score = 2 * precision * recall / (precision + recall)
 print(f'Precision of the network on test dataset is : {precision}')
 print(f'Recall of the network on test dataset is : {recall}')
 print(f'F1 Score of the network on test dataset is : {f1_score}')
-
-
