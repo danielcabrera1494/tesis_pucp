@@ -28,5 +28,5 @@ for category in stutter_categories:
     for idx, filename in enumerate(os.listdir(category_path)):
         if filename.endswith('.wav'):
             speaker_audio_path = os.path.join(category_path, filename)
-            output_name = f"{category}_sample_{idx}.wav"
+            output_name = f"{category}_sample_{idx}_x1.wav"
             augmentation_tool.augment(speaker_audio_path=speaker_audio_path, output_name=output_name)
