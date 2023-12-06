@@ -30,7 +30,7 @@ for category in stutter_categories:
             speaker_audio_path = os.path.join(category_path, filename)
 
             # Loop through each sentence for augmentation
-            for sentence_idx, sentence in enumerate(sentences):
-                output_name = f"{category}_sample_{idx}_{sentence_idx}.wav"
-                augmentation_tool.augment(speaker_audio_path=speaker_audio_path,
-                                          text=sentence, output_name=output_name)
+#            for sentence_idx, sentence in enumerate(sentences):
+#                output_name = f"{category}_sample_{idx}_{sentence_idx}.wav"
+#                augmentation_tool.augment(speaker_audio_path=speaker_audio_path,
+#                                          text=sentence, output_name=output_name)
