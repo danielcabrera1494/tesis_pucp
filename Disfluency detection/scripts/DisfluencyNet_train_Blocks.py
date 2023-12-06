@@ -299,7 +299,7 @@ eval_losses=[]
 eval_accu=[]
 
 # Define the relative path for the directory and the filename
-directory_relative_path = f'../scripts/saves/{folder_save_stutter}/{folder_train_sttuter}'
+directory_relative_path = f'../scripts/saves/{folder_train_sttuter}/{folder_save_stutter}'
 save_name = f'DisfluencyNet_{folder_train_sttuter}_{file_save_name}_quart.pth'
 
 # Convert the relative path to an absolute path
