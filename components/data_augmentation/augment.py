@@ -1,41 +1,29 @@
-import os
 import random
-from .cloning.voice_cloning import VoiceCloner
 from .noising.noise_audio_augment import NoiseAugmenter
-
 
 class AugmentationTool:
 
-    def __init__(self, output_dir, gpu=False):
-        self._lang = "es"
+    def __init__(self, output_dir):
         self._output_dir = output_dir
     
-        # Create the "speech_generated" directory if it doesn't exist
+        # Create the output directory if it doesn't exist
         if not os.path.exists(self._output_dir):
             os.makedirs(self._output_dir)
 
-        self._voice_cloner = VoiceCloner(gpu=gpu)
-
         self._noise_augmenter = NoiseAugmenter()
 
-
-    def augment(self, speaker_audio_path, text, output_name):
-
-        # generate "cleaned" speech
-        self._voice_cloner.generate_speech(speaker_audio_path, text,
-                                           os.path.join(self._output_dir, output_name),
-                                           language=self._lang)
-
+    def augment(self, speaker_audio_path, output_name):
+        aleatorio = random.random()
         # Randomly choose a noise transformation
-        if random.random() >= 0.5:
+        if aleatorio >= 0.5:
             # Use transform_1
             self._noise_augmenter.transform_1(
-                os.path.join(self._output_dir, output_name),
+                speaker_audio_path,
                 os.path.join(self._output_dir, "aug1_" + output_name)
             )
         else:
             # Use transform_2
             self._noise_augmenter.transform_2(
-                os.path.join(self._output_dir, output_name),
+                speaker_audio_path,
                 os.path.join(self._output_dir, "aug2_" + output_name)
             )

@@ -1,14 +1,10 @@
 import os
-from utils import read_tokenize_file
 from components.data_augmentation.augment import AugmentationTool
-
-# Assuming sentences are the same for all audio files
-sentences = read_tokenize_file("sample.txt")
 
 # Base directory for original train data and directory for augmented files
 base_dir = '/content/drive/MyDrive/Ulima/Data/train_data'
 augmented_base_dir = '/content/drive/MyDrive/Ulima/Data/augment_x1_train_data'
-stutter_categories = ['Prolongation', 'WordRep', 'SoundRep', 'Block']
+stutter_categories = ['WordRep','Block','SoundRep','Prolongation']
 
 # Ensure augmented directories exist
 for category in stutter_categories:
@@ -28,9 +24,5 @@ for category in stutter_categories:
     for idx, filename in enumerate(os.listdir(category_path)):
         if filename.endswith('.wav'):
             speaker_audio_path = os.path.join(category_path, filename)
-
-            # Loop through each sentence for augmentation
-#            for sentence_idx, sentence in enumerate(sentences):
-#                output_name = f"{category}_sample_{idx}_{sentence_idx}.wav"
-#                augmentation_tool.augment(speaker_audio_path=speaker_audio_path,
-#                                          text=sentence, output_name=output_name)
+            output_name = f"{category}_sample_{idx}.wav"
+            augmentation_tool.augment(speaker_audio_path=speaker_audio_path, output_name=output_name)
