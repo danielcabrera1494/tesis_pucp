@@ -33,8 +33,12 @@ from helper_functions import __test_balanced_data__
 from helper_functions import train
 from helper_functions import test
 
+folder_train_sttuter = 'train_data'
+file_save_name = 'wp'
+folder_save_stutter = 'Word_Repetition'
+
 # get all data
-train_path_stutter = '/content/drive/MyDrive/Ulima/Data/train_data/WordRep'
+train_path_stutter = f'/content/drive/MyDrive/Ulima/Data/{folder_train_sttuter}/WordRep'
 train_path_fluent  = '/content/drive/MyDrive/Ulima/Data/train_data/NoStutteredWords'
 test_path_stutter  = '/content/drive/MyDrive/Ulima/Data/test_data/WordRep'
 test_path_fluent   = '/content/drive/MyDrive/Ulima/Data/test_data/NoStutteredWords'
@@ -294,9 +298,22 @@ def train(epoch):
 eval_losses=[]
 eval_accu=[]
 
-relative_path = '../scripts/saves/DisfluencyNet_snd_quart.pth'
-absolute_path = os.path.abspath(relative_path)
-torch.save(model, absolute_path)
+# Define the relative path for the directory and the filename
+directory_relative_path = f'../scripts/saves/{folder_save_stutter}/{folder_train_sttuter}'
+save_name = f'DisfluencyNet_{folder_train_sttuter}_{file_save_name}_quart.pth'
+
+# Convert the relative path to an absolute path
+directory_absolute_path = os.path.abspath(directory_relative_path)
+
+# Create the directory if it doesn't exist
+if not os.path.exists(directory_absolute_path):
+    os.makedirs(directory_absolute_path)
+
+# Construct the full path for the file
+file_absolute_path = os.path.join(directory_absolute_path, save_name)
+
+# Save the model
+torch.save(model, file_absolute_path)
 
 def test(epoch):
   model.eval()
