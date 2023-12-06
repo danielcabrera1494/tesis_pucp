@@ -1,6 +1,9 @@
 import os
 from components.data_augmentation.augment import AugmentationTool
 
+import random
+random.seed(3)
+
 # Base directory for original train data and directory for augmented files
 base_dir = '/content/drive/MyDrive/Ulima/Data/train_data'
 augmented_base_dir = '/content/drive/MyDrive/Ulima/Data/augment_x1_train_data'
