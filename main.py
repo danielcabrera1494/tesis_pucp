@@ -2,6 +2,7 @@ import os
 from components.data_augmentation.augment import AugmentationTool
 
 import random
+#x1 = 3 | x2 = 4 | x3 = 5 | x4 = 6
 random.seed(3)
 
 # Base directory for original train data and directory for augmented files
