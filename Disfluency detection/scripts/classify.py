@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 import torchaudio
+import os
+import csv  # Import the csv module
 
-
-def __get_device__() :
+def get_device() :
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = "cpu"
     print('Device available is', device)
@@ -11,8 +12,8 @@ def __get_device__() :
 
 
 class StutterNet(nn.Module):
-    def __init__(self, batch_size):
-        super(StutterNet, self).__init__()
+    def init(self, batch_size):
+        super(StutterNet, self).init()
         # input shape = (batch_size, 1, 149,768)
         # in_channels is batch size
         self.layer1 = nn.Sequential(
@@ -80,7 +81,7 @@ class StutterNet(nn.Module):
         return out
 
 
-device  = __get_device__()
+device  = get_device()
 
 # wav2vec2.0
 bundle = torchaudio.pipelines.WAV2VEC2_XLSR53
@@ -89,9 +90,9 @@ print("Audio backends:", torchaudio.list_audio_backends())
 
 model_wav2vec = bundle.get_model().to(device)
 ## Convert audio to numpy to wav2vec feature encodings
-def conv_audio_data (filename) :
+def conv_audio_data(filename, device, bundle):
     audio_format = 'wav'
-    waveform, sample_rate = torchaudio.load(filename, format = audio_format)
+    waveform, sample_rate = torchaudio.load(filename, format=audio_format)
     waveform = waveform.to(device)
     if sample_rate != bundle.sample_rate:
         print('Mismatched sample rate')
@@ -100,24 +101,38 @@ def conv_audio_data (filename) :
     emission = emission.cpu().detach().numpy()
     return emission
 
+def process_directory(directory, model, device, bundle):
+    results = []
+    for root, dirs, files in os.walk(directory):
+        for filename in files:
+            if filename.lower().endswith('.wav'):
+                file_path = os.path.join(root, filename)
+                print(f"Processing {file_path}")
 
-filename = "/content/tesis_pucp/Information/Clips/WhatsApp Audio 2020-05-27 at 10.23.37 AM_0000.wav"
-fluent_np = conv_audio_data(filename)
+                # Convert audio to feature encodings
+                audio_features = conv_audio_data(file_path, device, bundle)
 
+                # Make predictions
+                with torch.no_grad():
+                    print("predicting")
+                    outputs = model(torch.tensor(audio_features).unsqueeze(0).to(device))
+                    _, predicted = torch.max(outputs.data, 1)
+                    print(f"Predicted for {filename}: {outputs}, {predicted}")
+                    results.append([filename, outputs.tolist(), predicted.item()])
 
-model_path = "DisfluencyNet_train_data_blk_quart.pth"
+    # Write results to CSV
+    with open('prediction_results.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Filename', 'Outputs', 'Predicted'])
+        writer.writerows(results)
+
+model_path = "/content/drive/MyDrive/Ulima/Data/saves/DisfluencyNet_train_data_blk_quart.pth"
 
 print("loading model")
 model = torch.load(model_path)
 print("model loaded")    
-model.eval()                          
-                          
-with torch.no_grad():
-    print("predicting")
-    print(torch.tensor(fluent_np).unsqueeze(0).shape)
-    outputs = model(torch.tensor(fluent_np).unsqueeze(0).to(device))
-    _, predicted = torch.max(outputs.data, 1)
-    print(outputs)
-    print(predicted)
+model.eval()
 
-
+# Directory containing your audio files
+audio_directory = "/content/drive/MyDrive/Ulima/Data/disfluency_augmentation_clips"
+process_directory(audio_directory, model, device, bundle)
