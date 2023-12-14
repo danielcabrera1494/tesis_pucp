@@ -5,6 +5,8 @@ import os
 import csv  # Import the csv module
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')  # Use a non-interactive backend
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -144,20 +146,30 @@ def process_directory(directory, model, device, bundle, true_labels):
     print(f"Number of predictions: {len(predictions)}")
     print(f"Number of true labels: {len(true_labels)}") 
 
+    # Check if lengths match
     if len(predictions) != len(true_labels):
         print("Error: Mismatch in the number of samples between predictions and true labels.")
-        return 
-    
+        return
+
+    # Verify the content of predictions and true_labels
+    print(f"Sample predictions: {predictions[:10]}")
+    print(f"Sample true labels: {true_labels[:10]}")
+
     # Generate the confusion matrix
     cm = confusion_matrix(true_labels, predictions)
-    
+    print("Confusion Matrix:\n", cm)
+
     # Visualize the confusion matrix
     plt.figure(figsize=(10, 7))
-    sns.heatmap(cm, annot=True, fmt='g')
+    sns.heatmap(cm, annot=True, fmt='g', cmap='viridis')
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix')
     plt.show()
+
+    # Save the plot to a file
+    plt.savefig('confusion_matrix.png')
+    print("Confusion matrix saved as 'confusion_matrix.png'.")
 
 model_path = "/content/drive/MyDrive/Ulima/Data/saves/DisfluencyNet_train_data_blk_quart.pth"
 
