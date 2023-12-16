@@ -7,6 +7,10 @@ import sys
 
 import matplotlib.pyplot as plt
 import IPython.display as ipd
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')  # Use a non-interactive backend
 
 from tqdm import tqdm
 
@@ -315,12 +319,20 @@ file_absolute_path = os.path.join(directory_absolute_path, save_name)
 # Save the model
 torch.save(model, file_absolute_path)
 
+# Directory for saving confusion matrix plots
+confusion_matrix_directory = 'confusion_matrix'
+os.makedirs(confusion_matrix_directory, exist_ok=True)
+
 def test(epoch):
   model.eval()
 
   running_loss=0
   correct=0
   total=0
+
+  # These lists will store all the predictions and true labels
+  all_predictions = []
+  all_labels = []
 
   with torch.no_grad():
     for data in valid_loader:
@@ -329,12 +341,30 @@ def test(epoch):
       outputs=model(features)
 
       _, predicted_valid = torch.max(outputs.data, 1)
+      all_predictions.extend(predicted_valid.cpu().numpy())
+      all_labels.extend(labels.cpu().numpy())
 
       loss= criterion(outputs,labels)
       running_loss+=loss.item()
       total += labels.size(0)
       correct += predicted_valid.eq(labels).sum().item()
-  
+
+  # Now we can calculate the confusion matrix using all_predictions and all_labels
+  cm = confusion_matrix(all_labels, all_predictions)
+  print(f'Confusion Matrix for Epoch {epoch}:\n', cm)
+
+  # Visualize the confusion matrix
+  plt.figure(figsize=(10, 7))
+  sns.heatmap(cm, annot=True, fmt='g', cmap='viridis')
+  plt.xlabel('Predicted')
+  plt.ylabel('True')
+  plt.title(f'Confusion Matrix for Epoch {epoch}')
+  plt.show()
+
+ # Save the plot for each epoch in the 'confusion_matrix' directory
+  plt.savefig(os.path.join(confusion_matrix_directory, f'confusion_matrix_epoch_{epoch}.png'))
+  print(f"Confusion matrix for epoch {epoch} saved as '{confusion_matrix_directory}/confusion_matrix_epoch_{epoch}.png'.")
+
   test_loss=running_loss/len(valid_loader)
   accu=100.*correct/total
   
