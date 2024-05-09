@@ -91,47 +91,48 @@ wav2vec_rep = Wav2VecRepresentation(device)
 subset = "train"
 disfluency = "SoundRep"
 
-stutter_train_path = f'/data/msobrevilla/audio/{subset}_data/{disfluency}'
-fluent_train_path = f'/data/msobrevilla/audio/{subset}_data/NoStutteredWords'
+stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
                                             wav2vec_rep, balance=True)
 
 
 subset = "test"
-stutter_train_path = f'/data/msobrevilla/audio/{subset}_data/{disfluency}'
-fluent_train_path = f'/data/msobrevilla/audio/{subset}_data/NoStutteredWords'
+stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_test, y_test = load_dataset_from_path(stutter_train_path,
                                             fluent_train_path,
                                             wav2vec_rep, balance=False)
 
 
-x_train, x_dev, y_train, y_dev = train_test_split(x_train, 
-                                                    y_train, 
-                                                    test_size=0.3, 
-                                                    random_state=123, 
-                                                    shuffle=True, 
-                                                    stratify = y_train)
+subset = "val"
+stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+x_val, y_val = load_dataset_from_path(stutter_train_path,
+                                            fluent_train_path,
+                                            wav2vec_rep, balance=False)
+
 
 n_samples_train = np.shape(x_train)[0]
-n_samples_dev = np.shape(x_dev)[0]
+n_samples_val = np.shape(x_val)[0]
 n_samples_test = np.shape(x_test)[0]
 
 print('Number of samples to train = ', n_samples_train)
-print('Number of samples to validate = ', n_samples_dev)
+print('Number of samples to validate = ', n_samples_val)
 print('Number of samples to test = ', n_samples_test)
 
 batch_size = 32 #128
 num_epochs = 50 #150
 learning_rate = 0.0003 #0.0001
-output_path = "ckp_stutternet"
+output_path = f'ckp_stutternet_{disfluency}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
-dev_dataset = AudioDataset(x_dev, y_dev, n_samples_dev)
+val_dataset = AudioDataset(x_val, y_val, n_samples_val)
 test_dataset = AudioDataset(x_test,y_test,n_samples_test)
 
 train_loader = get_dataloader(train_dataset, batch_size, shuffle=True)
-dev_loader = get_dataloader(dev_dataset, batch_size)
+val_loader = get_dataloader(val_dataset, batch_size)
 
 
 model = StutterNet(batch_size).to(device)
@@ -153,7 +154,7 @@ for epoch in range(1,epochs+1):
 
     print(f'EPOCH {epoch} ...')
     train(model, train_loader, optimizer, criterion)
-    _,_,f1 = evaluate(model, dev_loader, criterion)
+    _,_,f1 = evaluate(model, val_loader, criterion)
 
     if f1 > min_f1:
         min_f1 = f1
