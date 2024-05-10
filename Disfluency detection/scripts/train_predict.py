@@ -188,6 +188,8 @@ def test_model(model, test_loader, device, output_csv_path):
             # Collect data for CSV
             results.extend(zip(labels.cpu().numpy(), predicted.cpu().numpy(), probabilities.cpu().numpy()))
 
+            print("Predicted:", predicted)
+
     # Calculate metrics
     final_labels, final_predictions, probabilities = zip(*results)
     final_labels = np.array(final_labels)

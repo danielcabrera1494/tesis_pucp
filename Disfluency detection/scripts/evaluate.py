@@ -34,6 +34,13 @@ def test_model(model, test_loader, device, output_csv_path):
             # Collect data for CSV
             results.extend(zip(labels.cpu().numpy(), predicted.cpu().numpy(), probabilities.cpu().numpy()))
 
+            # Diagnostic print
+            print("Features:", features)
+            print("Labels:", labels)
+            print("Outputs:", outputs)
+            print("Probabilities:", probabilities)
+            print("Predicted:", predicted)
+
     # Calculate metrics
     final_labels, final_predictions, probabilities = zip(*results)
     final_labels = np.array(final_labels)
@@ -61,6 +68,7 @@ def test_model(model, test_loader, device, output_csv_path):
     })
     results_df.to_csv(output_csv_path, index=False)
     print(f"Predictions saved to {output_csv_path}")
+    print(f'Accuracy: {100 * correct / total:.2f}%')
 
 if __name__ == '__main__':
     device = __get_device__()
