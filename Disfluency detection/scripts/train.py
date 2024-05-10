@@ -99,18 +99,18 @@ x_train, y_train = load_dataset_from_path(stutter_train_path,
 
 
 subset = "test"
-stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
-fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
-x_test, y_test = load_dataset_from_path(stutter_train_path,
-                                            fluent_train_path,
+stutter_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+fluent_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+x_test, y_test = load_dataset_from_path(stutter_test_path,
+                                            fluent_test_path,
                                             wav2vec_rep, balance=False)
 
 
 subset = "val"
-stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
-fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
-x_val, y_val = load_dataset_from_path(stutter_train_path,
-                                            fluent_train_path,
+stutter_val_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+fluent_val_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+x_val, y_val = load_dataset_from_path(stutter_val_path,
+                                            fluent_val_path,
                                             wav2vec_rep, balance=False)
 
 
