@@ -218,9 +218,6 @@ def test_model(model, test_loader, device, output_csv_path):
     results_df.to_csv(output_csv_path, index=False)
     print(f"Predictions saved to {output_csv_path}")
 
-    # Return the arrays
-    return final_labels, final_predictions, probabilities
-
 
 def fleiss_kappa(lists, classes):
     n = len(lists)
@@ -250,14 +247,4 @@ else:
 
 # Assuming the test dataset and model are already set up correctly
 test_loader = get_dataloader(test_dataset, batch_size, shuffle=True)
-final_labels, final_predictions, probabilities = test_model(model, test_loader, device, output_csv_path)
-
-# Now you can use these arrays as needed
-print("Labels:", final_labels)
-print("Predictions:", final_predictions)
-print("Probabilities:", probabilities)
-
-# Fleiss Kappa calculation
-classes = [0,1]
-lists = [final_labels, final_predictions]
-print("Fleiss Kappa: ", fleiss_kappa(lists, classes))
+test_model(model, test_loader, device, output_csv_path)
