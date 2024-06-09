@@ -68,9 +68,6 @@ class StutterNet_1(nn.Module):
         out = self.relu(out)
         # out = self.fc4_bn(out)
 
-        out = self.fc6(out)
-        out = self.relu(out)
-
         out = self.fc5(out)
         out = self.sm(out)
         #print('After final ',np.shape(out))
