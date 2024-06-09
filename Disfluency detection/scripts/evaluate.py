@@ -7,6 +7,7 @@ from utils import __get_device__, Wav2VecRepresentation
 from sklearn.metrics import f1_score
 
 import os
+from sklearn.metrics import confusion_matrix
 
 def load_model(model_path, device):
     model = StutterNet(batch_size=32)  # Ensure this matches your model's architecture
