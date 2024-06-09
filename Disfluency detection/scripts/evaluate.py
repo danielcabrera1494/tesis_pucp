@@ -1,4 +1,4 @@
-import torch
+uimport torch
 import numpy as np
 import pandas as pd
 from model import StutterNet
@@ -19,33 +19,33 @@ def test_model(model, test_loader, device, output_csv_path):
     model.eval()
     total = correct = predicted_stutter = labels_stutter = correct_stutter = 0
     results = []
+    all_labels = []
+    all_predictions = []
 
     with torch.no_grad():
         for features, labels in test_loader:
-            features = features.to(device)  # Ensure features are to device
-            labels = labels.to(device)  # Ensure labels are to device as well
+            features = features.to(device)
+            labels = labels.to(device)
             outputs = model(features)
             probabilities = torch.sigmoid(outputs)[:, 0]  # Apply sigmoid to the output
             predicted = (probabilities > 0.5).long()
 
             total += labels.size(0)
-            correct += (predicted == labels).sum().item()  # Now this line should work without error
-
-            # Collect data for CSV
+            correct += (predicted == labels).sum().item()
             results.extend(zip(labels.cpu().numpy(), predicted.cpu().numpy(), probabilities.cpu().numpy()))
-
-            # Diagnostic print
-            print("Features:", features)
-            print("Labels:", labels)
-            print("Outputs:", outputs)
-            print("Probabilities:", probabilities)
-            print("Predicted:", predicted)
+            all_labels.extend(labels.cpu().numpy())
+            all_predictions.extend(predicted.cpu().numpy())
 
     # Calculate metrics
     final_labels, final_predictions, probabilities = zip(*results)
     final_labels = np.array(final_labels)
     final_predictions = np.array(final_predictions)
     probabilities = np.array(probabilities)
+
+    # Generating confusion matrix
+    cm = confusion_matrix(final_labels, final_predictions)
+    print("Confusion Matrix:\n", cm)
+
     predicted_stutter = np.sum(final_predictions == 1)
     labels_stutter = np.sum(final_labels == 1)
     correct_stutter = np.sum((final_predictions == 1) & (final_labels == 1))
