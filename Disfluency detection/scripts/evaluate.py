@@ -73,22 +73,22 @@ def test_model(model, test_loader, device, output_csv_path):
 
 if __name__ == '__main__':
     device = __get_device__()
-    model_path = 'ckp_stutternet_SoundRep.pt'
+
+    subset = "val"
+    disfluency = "SoundRep"
+    model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_true.pt'
     model = load_model(model_path, device)
 
     # Setup the data - assuming you have functions to create/load your dataset
     wav2vec_rep = Wav2VecRepresentation(device)
-
-    subset = "test"
-    disfluency = "SoundRep"
     
-    stutter_test_path = '/content/drive/MyDrive/Ulima/Data/test_data/SoundRep'
-    fluent_test_path = '/content/drive/MyDrive/Ulima/Data/test_data/NoStutteredWords'
+    stutter_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+    fluent_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
     x_test, y_test = load_dataset_from_path(stutter_test_path, fluent_test_path, wav2vec_rep, balance=False)
     test_dataset = AudioDataset(x_test, y_test, np.shape(x_test)[0])
     test_loader = get_dataloader(test_dataset, batch_size=32, shuffle=True)
 
-    output_csv_path = 'test_predictions.csv'
+    output_csv_path = f'{subset}_predictions.csv'
     if not os.path.exists(output_csv_path):
         print("Creating a new CSV file for predictions.")
     else:
