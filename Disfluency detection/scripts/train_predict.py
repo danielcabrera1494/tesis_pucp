@@ -218,26 +218,6 @@ def test_model(model, test_loader, device, output_csv_path):
     results_df.to_csv(output_csv_path, index=False)
     print(f"Predictions saved to {output_csv_path}")
 
-
-def fleiss_kappa(lists, classes):
-    n = len(lists)
-    N = len(lists[0])
-    k = len(classes)
-    
-    nij = []
-    for i in range(N):
-        nij.append([0]*k)
-        
-    
-    for i in range(len(lists)):
-        for j in range(len(lists[i])):
-            nij[j][classes.index(lists[i][j])] += 1 
-    
-    P = []
-    for i in nij:
-        P.append(1/(n*(n-1))*(sum([j*j for j in i])-n))
-    return (((sum(P)/N)-(sum([y*y for y in [x/(N*n) for x in[sum(i) for i in zip(*nij)]]])))/(1-sum([y*y for y in [x/(N*n) for x in[sum(i) for i in zip(*nij)]]]))+1)/2
-
 # Set the output path and check if it exists
 output_csv_path = 'test_predictions.csv'
 if not os.path.exists(output_csv_path):
