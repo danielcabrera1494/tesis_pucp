@@ -92,12 +92,13 @@ wav2vec_rep = Wav2VecRepresentation(device)
 
 subset = "train"
 disfluency = "SoundRep"
+balance_train = False
 
 stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
 fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
-                                            wav2vec_rep, balance=True)
+                                            wav2vec_rep, balance=balance_train)
 
 
 subset = "test"
@@ -127,7 +128,7 @@ print('Number of samples to test = ', n_samples_test)
 batch_size = 32 #128
 num_epochs = 50 #150
 learning_rate = 0.0003 #0.0001
-output_path = f'ckp_stutternet_{disfluency}'
+output_path = f'ckp_stutternet_{disfluency}_{balance_train}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
 val_dataset = AudioDataset(x_val, y_val, n_samples_val)
