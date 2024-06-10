@@ -74,9 +74,10 @@ def test_model(model, test_loader, device, output_csv_path):
 if __name__ == '__main__':
     device = __get_device__()
 
-    subset = "val"
+    subset = "test"
     disfluency = "SoundRep"
-    model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_true.pt'
+    balance = "True"
+    model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
     model = load_model(model_path, device)
 
     # Setup the data - assuming you have functions to create/load your dataset
@@ -88,7 +89,7 @@ if __name__ == '__main__':
     test_dataset = AudioDataset(x_test, y_test, np.shape(x_test)[0])
     test_loader = get_dataloader(test_dataset, batch_size=32, shuffle=True)
 
-    output_csv_path = f'{subset}_predictions.csv'
+    output_csv_path = f'{subset}_predictions_{balance}.csv'
     if not os.path.exists(output_csv_path):
         print("Creating a new CSV file for predictions.")
     else:
