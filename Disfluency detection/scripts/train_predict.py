@@ -92,12 +92,13 @@ wav2vec_rep = Wav2VecRepresentation(device)
 
 subset = "train"
 disfluency = "SoundRep"
+train_balance = False
 
 stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
 fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
-                                            wav2vec_rep, balance=True)
+                                            wav2vec_rep, balance=train_balance)
 
 
 subset = "test"
@@ -127,7 +128,7 @@ print('Number of samples to test = ', n_samples_test)
 batch_size = 32 #128
 num_epochs = 50 #150
 learning_rate = 0.0003 #0.0001
-output_path = f'ckp_stutternet_{disfluency}'
+output_path = f'ckp_stutternet_{disfluency}_{train_balance}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
 val_dataset = AudioDataset(x_val, y_val, n_samples_val)
@@ -147,6 +148,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 
 epochs=num_epochs
 patience = 100
 min_f1 = 0.0
+best_epoch = 0
 
 for epoch in range(1,epochs+1):
 
@@ -161,12 +163,14 @@ for epoch in range(1,epochs+1):
     if f1 > min_f1:
         min_f1 = f1
         patience = 100
+        best_epoch = epoch
         #torch.save(model.state_dict(), output_path + f'_{epoch}.pt')
         torch.save(model.state_dict(), output_path + '.pt')
     else:
         print(f'Decreasing patience from {patience} to {(patience-1)}')
         patience -= 1
 
+print(f'The best model was saved at epoch {best_epoch} with an F1 score of {min_f1:.3f}')
 #################################### PREDICTIONS ##############################################
 
 def test_model(model, test_loader, device, output_csv_path):
@@ -217,26 +221,6 @@ def test_model(model, test_loader, device, output_csv_path):
     })
     results_df.to_csv(output_csv_path, index=False)
     print(f"Predictions saved to {output_csv_path}")
-
-
-def fleiss_kappa(lists, classes):
-    n = len(lists)
-    N = len(lists[0])
-    k = len(classes)
-    
-    nij = []
-    for i in range(N):
-        nij.append([0]*k)
-        
-    
-    for i in range(len(lists)):
-        for j in range(len(lists[i])):
-            nij[j][classes.index(lists[i][j])] += 1 
-    
-    P = []
-    for i in nij:
-        P.append(1/(n*(n-1))*(sum([j*j for j in i])-n))
-    return (((sum(P)/N)-(sum([y*y for y in [x/(N*n) for x in[sum(i) for i in zip(*nij)]]])))/(1-sum([y*y for y in [x/(N*n) for x in[sum(i) for i in zip(*nij)]]]))+1)/2
 
 # Set the output path and check if it exists
 output_csv_path = 'test_predictions.csv'
