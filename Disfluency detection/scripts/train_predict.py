@@ -45,6 +45,7 @@ def train(model, loader, optimizer, criterion):
     train_loss = running_loss/len(loader)
     accu = 100.*correct/total
     print(f'Train Loss: {train_loss:.3f} | Accuracy: {accu:.3f}')
+    return train_loss, accu  # Add this line to return the loss and accuracy
 
 
 def evaluate(model, loader, criterion):
@@ -92,7 +93,7 @@ wav2vec_rep = Wav2VecRepresentation(device)
 
 subset = "train"
 disfluency = "SoundRep"
-train_balance = False
+train_balance = True
 
 stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
 fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
@@ -150,6 +151,10 @@ patience = 100
 min_f1 = 0.0
 best_epoch = 0
 
+epochs_list = []
+train_losses = []
+val_losses = []
+
 for epoch in range(1,epochs+1):
 
     if patience == 0:
@@ -157,8 +162,12 @@ for epoch in range(1,epochs+1):
         break
 
     print(f'EPOCH {epoch} ...')
-    train(model, train_loader, optimizer, criterion)
-    _,_,f1 = evaluate(model, val_loader, criterion)
+    train_loss, train_acc = train(model, train_loader, optimizer, criterion)
+    val_loss, val_acc, f1 = evaluate(model, val_loader, criterion)
+
+    epochs_list.append(epoch)
+    train_losses.append(train_loss)
+    val_losses.append(val_loss)
 
     if f1 > min_f1:
         min_f1 = f1
@@ -169,6 +178,15 @@ for epoch in range(1,epochs+1):
     else:
         print(f'Decreasing patience from {patience} to {(patience-1)}')
         patience -= 1
+
+# After the training loop, save the collected data to a CSV file
+results_df = pd.DataFrame({
+    'epoch': epochs_list,
+    'train_loss': train_losses,
+    'val_loss': val_losses
+})
+results_df.to_csv(f'epoch_losses_{disfluency}_{train_balance}.csv', index=False)
+print(f'Losses per epoch saved to epoch_losses_{disfluency}_{train_balance}.csv')
 
 print(f'The best model was saved at epoch {best_epoch} with an F1 score of {min_f1:.3f}')
 #################################### PREDICTIONS ##############################################
