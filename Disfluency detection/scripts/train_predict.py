@@ -172,11 +172,7 @@ for epoch in range(1,epochs+1):
 
     if f1 > min_f1:
         min_f1 = f1
-<<<<<<< Updated upstream
-        patience = 100
-=======
         patience = 40
->>>>>>> Stashed changes
         best_epoch = epoch
         #torch.save(model.state_dict(), output_path + f'_{epoch}.pt')
         torch.save(model.state_dict(), output_path + '.pt')

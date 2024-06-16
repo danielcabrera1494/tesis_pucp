@@ -105,11 +105,7 @@ class StutterNet(nn.Module):
         self.layer1 = nn.Sequential(
             torch.nn.Conv2d(in_channels = 1, out_channels = 8, kernel_size=3, stride=1, padding=1),
             torch.nn.ReLU(),
-<<<<<<< Updated upstream
-            torch.nn.MaxPool2d(kernel_size=2, stride=2),
-=======
             torch.nn.MaxPool2d(kernel_size=2, stride=1),
->>>>>>> Stashed changes
             torch.nn.Dropout(p=0.5)
         )
         self.layer1_bn = nn.BatchNorm2d(8)
@@ -117,11 +113,7 @@ class StutterNet(nn.Module):
         self.layer2 = nn.Sequential(
             torch.nn.Conv2d(in_channels = 8, out_channels = 16, kernel_size=3, stride=1, padding=1),
             torch.nn.ReLU(),
-<<<<<<< Updated upstream
-            torch.nn.MaxPool2d(kernel_size=1, stride=2),
-=======
             torch.nn.MaxPool2d(kernel_size=2, stride=2),
->>>>>>> Stashed changes
             torch.nn.Dropout(p=0.5)
         )
         self.layer2_bn = nn.BatchNorm2d(16)
@@ -135,11 +127,7 @@ class StutterNet(nn.Module):
 
         # input size = (batch_size, 16, 37, 192)
         self.flatten = torch.nn.Flatten()
-<<<<<<< Updated upstream
-        self.fc1 = nn.Linear(16* 37* 256,500, bias=True)
-=======
         self.fc1 = nn.Linear(32*37*256, 500, bias=True)
->>>>>>> Stashed changes
         self.fc1_bn = nn.BatchNorm1d(500)
         self.fc2 = nn.Linear(500,250, bias=True)
         self.fc2_bn = nn.BatchNorm1d(250)
