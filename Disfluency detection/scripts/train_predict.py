@@ -81,7 +81,7 @@ def evaluate(model, loader, criterion):
     eval_loss = running_loss/len(loader)
     accu = 100.* correct/total
 
-    f1 = f1_score(all_labels, all_predictions, average='micro')
+    f1 = f1_score(all_labels, all_predictions)#, average='micro')
 
     print(f'Validation Loss: {eval_loss:.3f} | Accuracy: {accu:.3f} | F1: {f1:.3f}')
     return eval_loss, accu, f1
@@ -127,8 +127,8 @@ print('Number of samples to validate = ', n_samples_val)
 print('Number of samples to test = ', n_samples_test)
 
 batch_size = 32 #128
-num_epochs = 50 #150
-learning_rate = 0.0003 #0.0001
+num_epochs = 150 #150
+learning_rate = 0.001 #0.0001
 output_path = f'ckp_stutternet_{disfluency}_{train_balance}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
@@ -144,10 +144,11 @@ model = StutterNet(batch_size).to(device)
 # Loss and optimizer
 #criterion = nn.CrossEntropyLoss()
 criterion = nn.BCEWithLogitsLoss()
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.998), weight_decay=0.001)  
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 0.999), weight_decay=0.01)  
 
 epochs=num_epochs
-patience = 100
+patience = 40
+total_patience = patience
 min_f1 = 0.0
 best_epoch = 0
 
@@ -171,7 +172,11 @@ for epoch in range(1,epochs+1):
 
     if f1 > min_f1:
         min_f1 = f1
+<<<<<<< Updated upstream
         patience = 100
+=======
+        patience = 40
+>>>>>>> Stashed changes
         best_epoch = epoch
         #torch.save(model.state_dict(), output_path + f'_{epoch}.pt')
         torch.save(model.state_dict(), output_path + '.pt')
