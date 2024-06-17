@@ -13,6 +13,7 @@ from model import StutterNet
 
 import pandas as pd
 import os
+import shutil
 
 def train(model, loader, optimizer, criterion):
     model.train()
@@ -93,9 +94,9 @@ wav2vec_rep = Wav2VecRepresentation(device)
 
 subset = "train"
 disfluency = "SoundRep"
-train_balance = True
+train_balance = False
 
-stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/augment_x2_{subset}_data/{disfluency}'
 fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
@@ -129,7 +130,7 @@ print('Number of samples to test = ', n_samples_test)
 batch_size = 32 #128
 num_epochs = 150 #150
 learning_rate = 0.001 #0.0001
-output_path = f'ckp_stutternet_{disfluency}_{train_balance}'
+output_path = f'ckp_stutternet_{disfluency}_{train_balance}_x2'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
 val_dataset = AudioDataset(x_val, y_val, n_samples_val)
@@ -188,6 +189,13 @@ results_df = pd.DataFrame({
 })
 results_df.to_csv(f'epoch_losses_{disfluency}_{train_balance}.csv', index=False)
 print(f'Losses per epoch saved to epoch_losses_{disfluency}_{train_balance}.csv')
+
+#Save checkpoint in Google Drive
+source_path = '/content/tesis_pucp/Disfluency detection/scripts/'+output_path + '.pt'
+destination_path = '/content/drive/MyDrive/Ulima/Data/saves/tesis/'+output_path + '.pt'
+# Copy the file
+shutil.copyfile(source_path, destination_path)
+print("File copied successfully!")
 
 print(f'The best model was saved at epoch {best_epoch} with an F1 score of {min_f1:.3f}')
 #################################### PREDICTIONS ##############################################
