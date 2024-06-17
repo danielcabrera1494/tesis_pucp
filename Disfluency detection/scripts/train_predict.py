@@ -92,11 +92,11 @@ set_seed(42)
 device = __get_device__()
 wav2vec_rep = Wav2VecRepresentation(device)
 
-subset = "train"
+subset = "augment_x2_train"
 disfluency = "SoundRep"
 train_balance = False
 
-stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/augment_x2_{subset}_data/{disfluency}'
+stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
 fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
