@@ -151,7 +151,7 @@ class StutterNet(nn.Module):
         #print('After layer 2',np.shape(out))
 
         out = self.layer3(out)
-        print('After layer 3',np.shape(out))
+        #print('After layer 3',np.shape(out))
 
         out  = self.flatten(out)
 
