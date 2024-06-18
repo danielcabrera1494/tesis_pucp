@@ -8,6 +8,7 @@ from sklearn.metrics import f1_score
 
 import os
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 
 def load_model(model_path, device):
     model = StutterNet(batch_size=32)  # Ensure this matches your model's architecture
@@ -47,19 +48,21 @@ def test_model(model, test_loader, device, output_csv_path):
     cm = confusion_matrix(final_labels, final_predictions)
     print("Confusion Matrix:\n", cm)
 
-    predicted_stutter = np.sum(final_predictions == 1)
-    labels_stutter = np.sum(final_labels == 1)
-    correct_stutter = np.sum((final_predictions == 1) & (final_labels == 1))
+    print(classification_report(final_labels, final_predictions, target_names=['NoStuttered', 'Stuttered']))
 
-    acc_test = 100 * correct / total
-    recall = correct_stutter / labels_stutter if labels_stutter > 0 else 0
-    precision = correct_stutter / predicted_stutter if predicted_stutter > 0 else 0
-    f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+    #predicted_stutter = np.sum(final_predictions == 1)
+    #labels_stutter = np.sum(final_labels == 1)
+    #correct_stutter = np.sum((final_predictions == 1) & (final_labels == 1))
 
-    print(f'Accuracy on test dataset: {acc_test:.2f}%')
-    print(f'Precision: {precision:.2f}')
-    print(f'Recall: {recall:.2f}')
-    print(f'F1 Score: {f1_score:.2f}')
+    #acc_test = 100 * correct / total
+    #recall = correct_stutter / labels_stutter if labels_stutter > 0 else 0
+    #precision = correct_stutter / predicted_stutter if predicted_stutter > 0 else 0
+    #f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+
+    #print(f'Accuracy on test dataset: {acc_test:.2f}%')
+    #print(f'Precision: {precision:.2f}')
+    #print(f'Recall: {recall:.2f}')
+    #print(f'F1 Score: {f1_score:.2f}')
 
     # Save results to CSV
     results_df = pd.DataFrame({
@@ -76,7 +79,7 @@ if __name__ == '__main__':
 
     subset = "test"
     disfluency = "SoundRep"
-    balance = "True"
+    balance = "False"
     model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
     model = load_model(model_path, device)
 
