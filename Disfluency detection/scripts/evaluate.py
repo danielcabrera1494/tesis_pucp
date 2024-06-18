@@ -83,6 +83,10 @@ if __name__ == '__main__':
     model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
     model = load_model(model_path, device)
 
+    print("subset: "+ subset)
+    print("disfluency: "+disfluency)
+    print("balance: "+balance)
+
     # Setup the data - assuming you have functions to create/load your dataset
     wav2vec_rep = Wav2VecRepresentation(device)
     
