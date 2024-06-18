@@ -10,6 +10,20 @@ import os
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
+import argparse
+
+# Define the command-line arguments
+parser = argparse.ArgumentParser(description='Train DisfluencyNet for different stuttering events')
+parser.add_argument('-d', '--disfluency', type=str, required=True,
+                    help='Disfluency event to train on (blocks, prolongation, sound_rep, word_rep)')
+parser.add_argument('-s', '--subset', type=str, required=True,
+help='Subset (test or val) for predict)')
+parser.add_argument('-b', '--balance', type=str, required=True,
+help='The balance used in train)')
+parser.add_argument('-x', '--augment_data', type=str, required=False,
+help='Data like x1,x2,x3,x4')
+args = parser.parse_args()
+
 def load_model(model_path, device):
     model = StutterNet(batch_size=32)  # Ensure this matches your model's architecture
     model.load_state_dict(torch.load(model_path, map_location=device))
@@ -50,19 +64,19 @@ def test_model(model, test_loader, device, output_csv_path):
 
     print(classification_report(final_labels, final_predictions, target_names=['NoStuttered', 'Stuttered']))
 
-    #predicted_stutter = np.sum(final_predictions == 1)
-    #labels_stutter = np.sum(final_labels == 1)
-    #correct_stutter = np.sum((final_predictions == 1) & (final_labels == 1))
+    predicted_stutter = np.sum(final_predictions == 1)
+    labels_stutter = np.sum(final_labels == 1)
+    correct_stutter = np.sum((final_predictions == 1) & (final_labels == 1))
 
-    #acc_test = 100 * correct / total
-    #recall = correct_stutter / labels_stutter if labels_stutter > 0 else 0
-    #precision = correct_stutter / predicted_stutter if predicted_stutter > 0 else 0
-    #f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
+    acc_test = 100 * correct / total
+    recall = correct_stutter / labels_stutter if labels_stutter > 0 else 0
+    precision = correct_stutter / predicted_stutter if predicted_stutter > 0 else 0
+    f1_score = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
 
-    #print(f'Accuracy on test dataset: {acc_test:.2f}%')
-    #print(f'Precision: {precision:.2f}')
-    #print(f'Recall: {recall:.2f}')
-    #print(f'F1 Score: {f1_score:.2f}')
+    print(f'Accuracy on test dataset: {acc_test:.2f}%')
+    print(f'Precision: {precision:.2f}')
+    print(f'Recall: {recall:.2f}')
+    print(f'F1 Score: {f1_score:.2f}')
 
     # Save results to CSV
     results_df = pd.DataFrame({
@@ -77,12 +91,17 @@ def test_model(model, test_loader, device, output_csv_path):
 if __name__ == '__main__':
     device = __get_device__()
 
-    subset = "test"
-    disfluency = "SoundRep"
-    balance = "False"
-    model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
+    subset = args.subset
+    disfluency = args.disfluency
+    balance = args.balance
+    augment = args.augment_data
+    if augment == None:
+      model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
+    else:
+      model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}_{augment}.pt'
     model = load_model(model_path, device)
 
+    print(model_path)
     print("subset: "+ subset)
     print("disfluency: "+disfluency)
     print("balance: "+balance)
