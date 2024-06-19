@@ -22,6 +22,8 @@ parser.add_argument('-b', '--balance', type=str, required=True,
 help='The balance used in train)')
 parser.add_argument('-x', '--augment_data', type=str, required=False,
 help='Data like x1,x2,x3,x4')
+parser.add_argument('-p', '--speaker', type=str, required=False,
+help='Data like ATMA, LPJM, PVM, RRYR, SSF')
 args = parser.parse_args()
 
 def load_model(model_path, device):
@@ -95,6 +97,8 @@ if __name__ == '__main__':
     disfluency = args.disfluency
     balance = args.balance
     augment = args.augment_data
+    speaker = args.speaker
+
     if augment == None:
       model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}.pt'
     else:
@@ -109,8 +113,13 @@ if __name__ == '__main__':
     # Setup the data - assuming you have functions to create/load your dataset
     wav2vec_rep = Wav2VecRepresentation(device)
     
-    stutter_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
-    fluent_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+    if speaker == None:
+      stutter_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
+      fluent_test_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+    else:
+      stutter_test_path = f'/content/drive/MyDrive/Ulima/Data/{speaker}/{subset}_data/{disfluency}'
+      fluent_test_path = f'/content/drive/MyDrive/Ulima/Data/{speaker}/{subset}_data/NoStutteredWords'
+    
     x_test, y_test = load_dataset_from_path(stutter_test_path, fluent_test_path, wav2vec_rep, balance=False)
     test_dataset = AudioDataset(x_test, y_test, np.shape(x_test)[0])
     test_loader = get_dataloader(test_dataset, batch_size=32, shuffle=True)
