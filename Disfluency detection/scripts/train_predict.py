@@ -92,7 +92,7 @@ set_seed(42)
 device = __get_device__()
 wav2vec_rep = Wav2VecRepresentation(device)
 
-subset = "augment_x2_train"
+subset = "train"
 disfluency = "SoundRep"
 train_balance = False
 
@@ -130,7 +130,7 @@ print('Number of samples to test = ', n_samples_test)
 batch_size = 32 #128
 num_epochs = 150 #150
 learning_rate = 0.001 #0.0001
-output_path = f'ckp_stutternet_{disfluency}_{train_balance}_x2'
+output_path = f'ckp_stutternet_{disfluency}_{train_balance}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
 val_dataset = AudioDataset(x_val, y_val, n_samples_val)
