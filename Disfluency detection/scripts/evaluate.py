@@ -21,7 +21,7 @@ help='Subset (test or val) for predict)')
 parser.add_argument('-b', '--balance', type=str, required=True,
 help='The balance used in train)')
 parser.add_argument('-x', '--augment_data', type=str, required=False,
-help='Data like augment_x1, augment_1_x2, augment_2_x4')
+help='Data like x1,x2,x3,x4')
 parser.add_argument('-p', '--speaker', type=str, required=False,
 help='Data like ATMA, LPJM, PVM, RRYR, SSF')
 args = parser.parse_args()
@@ -105,7 +105,6 @@ if __name__ == '__main__':
     else:
       xn = augment.replace('augment_','')
       model_path = f'/content/drive/MyDrive/Ulima/Data/saves/tesis/ckp_stutternet_{disfluency}_{balance}_{xn}.pt'
-      
     model = load_model(model_path, device)
 
     print(model_path)
