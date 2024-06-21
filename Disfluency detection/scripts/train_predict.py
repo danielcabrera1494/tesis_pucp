@@ -16,12 +16,13 @@ import os
 import shutil
 
 import argparse
+import ast
 
 # Define the command-line arguments
 parser = argparse.ArgumentParser(description='Train DisfluencyNet for different stuttering events')
 parser.add_argument('-d', '--disfluency', type=str, required=True,
                     help='Disfluency event to train on (blocks, prolongation, sound_rep, word_rep)')
-parser.add_argument('-b', '--balance', type=str, required=True,
+parser.add_argument('-b', '--balance', type=lambda x: ast.literal_eval(x), required=True,
 help='The balance used in train)')
 parser.add_argument('-x', '--augment_data', type=str, required=False,
 help='Data like x1,x2,x3,x4')
