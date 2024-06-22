@@ -150,7 +150,7 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, betas=(0.9, 
 epochs=num_epochs
 patience = 40
 total_patience = patience
-min_f1 = 0.0
+min_f1 = -1.0
 best_epoch = 0
 
 epochs_list = []
