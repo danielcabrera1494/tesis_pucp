@@ -15,6 +15,19 @@ import pandas as pd
 import os
 import shutil
 
+import argparse
+import ast
+
+# Define the command-line arguments
+parser = argparse.ArgumentParser(description='Train DisfluencyNet for different stuttering events')
+parser.add_argument('-d', '--disfluency', type=str, required=True,
+                    help='Disfluency event to train on (blocks, prolongation, sound_rep, word_rep)')
+parser.add_argument('-b', '--balance', type=lambda x: ast.literal_eval(x), required=True,
+help='The balance used in train)')
+parser.add_argument('-x', '--augment_data', type=str, required=False,
+help='Data like x1,x2,x3,x4')
+args = parser.parse_args()
+
 def train(model, loader, optimizer, criterion):
     model.train()
     running_loss=0
@@ -92,12 +105,18 @@ set_seed(42)
 device = __get_device__()
 wav2vec_rep = Wav2VecRepresentation(device)
 
-subset = "augment_x2_train"
-disfluency = "SoundRep"
-train_balance = False
+augment_data = args.augment_data
+disfluency = args.disfluency
+train_balance = args.balance
+xn = ''
 
-stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/{disfluency}'
-fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/{subset}_data/NoStutteredWords'
+if augment_data == None:
+  stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/train_data/{disfluency}'
+else:
+  stutter_train_path = f'/content/drive/MyDrive/Ulima/Data/{augment_data}_train_data/{disfluency}'
+  xn = augment_data.replace('augment_','')
+
+fluent_train_path = f'/content/drive/MyDrive/Ulima/Data/train_data/NoStutteredWords'
 x_train, y_train = load_dataset_from_path(stutter_train_path, 
                                             fluent_train_path, 
                                             wav2vec_rep, balance=train_balance)
@@ -130,7 +149,11 @@ print('Number of samples to test = ', n_samples_test)
 batch_size = 32 #128
 num_epochs = 150 #150
 learning_rate = 0.001 #0.0001
-output_path = f'ckp_stutternet_{disfluency}_{train_balance}_x2'
+
+if xn == '':
+  output_path = f'ckp_stutternet_{disfluency}_{train_balance}'
+else:
+  output_path = f'ckp_stutternet_{disfluency}_{train_balance}_{xn}'
 
 train_dataset = AudioDataset(x_train,y_train, n_samples_train)
 val_dataset = AudioDataset(x_val, y_val, n_samples_val)
