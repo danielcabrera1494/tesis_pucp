@@ -213,6 +213,8 @@ results_df = pd.DataFrame({
 results_df.to_csv(f'epoch_losses_{disfluency}_{train_balance}.csv', index=False)
 print(f'Losses per epoch saved to epoch_losses_{disfluency}_{train_balance}.csv')
 
+print(f'The best model was saved at epoch {best_epoch} with an F1 score of {min_f1:.3f}')
+
 #Save checkpoint in Google Drive
 source_path = '/content/tesis_pucp/Disfluency detection/scripts/'+output_path + '.pt'
 destination_path = '/content/drive/MyDrive/Ulima/Data/saves/tesis/'+output_path + '.pt'
@@ -220,7 +222,6 @@ destination_path = '/content/drive/MyDrive/Ulima/Data/saves/tesis/'+output_path 
 shutil.copyfile(source_path, destination_path)
 print("File copied successfully!")
 
-print(f'The best model was saved at epoch {best_epoch} with an F1 score of {min_f1:.3f}')
 #################################### PREDICTIONS ##############################################
 
 def test_model(model, test_loader, device, output_csv_path):
